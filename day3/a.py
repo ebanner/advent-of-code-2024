@@ -3,7 +3,7 @@ import sys
 
 
 def get_memory():
-    lines = [line.strip() for line in sys.stdin.readline()]
+    lines = [line.strip() for line in sys.stdin]
     memory = ''.join(lines)
     return memory
 
