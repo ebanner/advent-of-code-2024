@@ -27,8 +27,6 @@ def mark_antinodes(a, b, grid):
     dx = x2 - x1
     dy = y2 - y1
 
-    m = dy / dx
-
     x = x1
     y = y1
 
@@ -41,7 +39,7 @@ def mark_antinodes(a, b, grid):
         grid[i][j] = '#'
 
         x += dx
-        y += int(dx*m)
+        y += dy
 
     x = x1
     y = y1
@@ -55,7 +53,7 @@ def mark_antinodes(a, b, grid):
         grid[i][j] = '#'
 
         x -= dx
-        y -= int(dx*m)
+        y -= dy
 
 
 def get_all_antinodes(antennas, grid):
