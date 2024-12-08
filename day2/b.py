@@ -11,7 +11,7 @@ def is_safe_increasing(report: list[int]):
         if report[i] < report[i + 1] and report[i + 1] - report[i] <= 3:
             continue
         else:
-            return (False, i)
+            return False
     return True
 
 
@@ -20,7 +20,7 @@ def is_safe_decreasing(report: list[int]):
         if report[i] > report[i + 1] and report[i] - report[i + 1] <= 3:
             continue
         else:
-            return (False, i)
+            return False
     return True
 
 
@@ -29,27 +29,19 @@ def remove(index, arr):
 
 
 def is_safe(report: list[int]):
-    result = is_safe_increasing(report)
-    if result == True:
+    if is_safe_increasing(report):
         return True
     else:
-        _, index = result
-        modified_report = remove(index, report)
-        result = is_safe_increasing(modified_report)
-        if result == True:
-            return True
+        for i in range(len(report)):
+            if is_safe_increasing(remove(i, report)):
+                return True
 
-    result = is_safe_decreasing(report)
-    if result == True:
+    if is_safe_decreasing(report):
         return True
     else:
-        _, index = result
-        modified_report = remove(index, report)
-        result = is_safe_decreasing(modified_report)
-        if result == True:
-            return True
-        else:
-            return False
+        for i in range(len(report)):
+            if is_safe_decreasing(remove(i, report)):
+                return True
 
     return False
     
