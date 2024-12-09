@@ -41,36 +41,26 @@ def find(source_id, files):
             return j
 
 
+def move(j, i, files):
+    files = insert(j, i, files)
+    files = remove(j+1, files)
+    return files
+
+
 def compact_files(files):
     j = len(files)-1
     SPACE_IDX = 2
-    # print(''.join(map(str, get_memory_layout(files))))
-    # print(files)
-    # print()
-    for source_id, desired_space, source_size in reversed(files):
+    for source_id, source_size, source_free_space in reversed(files):
         j = find(source_id, files)
-        # print('j:', j)
-        # print('F[j]:', source_id)
-        # print('desired_space', desired_space)
-        # print(''.join(map(str, get_memory_layout(files))))
-        # print(files)
-        for i, (_, size, space) in enumerate(files):
+        for i, (_, _, free_space) in enumerate(files):
             if i == j:
                 break
-            if space >= desired_space:
-                files[j-1][SPACE_IDX] += source_size + desired_space
-                files[j][SPACE_IDX] = space - desired_space
+            if free_space >= source_size:
+                files[j-1][SPACE_IDX] += source_size + source_free_space
+                files[j][SPACE_IDX] = free_space - source_size
                 files[i][SPACE_IDX] = 0
-                files = insert(j, i, files)
-                files = remove(j+1, files)
+                files = move(j, i, files)
                 break
-
-        # print('->')
-        # print(''.join(map(str, get_memory_layout(files))))
-        # print(files)
-        # print()
-        # print(j)
-
     return files
 
 
@@ -78,7 +68,6 @@ if __name__ == '__main__':
     files = get_files()
     compacted_files = compact_files(files)
     memory = get_memory_layout(compacted_files)
-    # print(''.join(map(str, memory)))
 
     sum = 0
     for i, id in enumerate(memory):
