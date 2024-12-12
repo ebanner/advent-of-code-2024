@@ -4,7 +4,9 @@ I'm doing Advent of Code this year with [☕️ Virtual Coffee](https://virtualc
 
 <img width="1004" alt="image" src="https://github.com/user-attachments/assets/1d18742c-3ab5-4916-bafc-39b9ade9a43c" />
 
-Check out the [AoC leaderboard slackbot](https://github.com/ebanner/advent-of-code-leaderboard) I made this year!
+## More
+
+Check out the [AoC leaderboard slackbot](https://github.com/ebanner/advent-of-code-leaderboard) I made this year! 🥳
 
 <img width="373" alt="image" src="https://github.com/user-attachments/assets/5a3de44f-a3f7-49fa-9915-f5cfb2280810">
 
