@@ -1,5 +1,7 @@
 import sys
 
+from tqdm import tqdm
+
 
 def get_files():
     line = sys.stdin.readline().strip()
@@ -25,52 +27,31 @@ def get_memory_layout(files):
     return memory_layout
 
 
-def insert(j, i, files):
-    new_files = files[:i+1] + files[j:j+1] + files[i+1:]
-    return new_files
+def find(id, memory):
+    for i in range(len(memory)):
+        if memory[i] == id:
+            return i
 
 
-def remove(j, files):
-    new_files = files[:j] + files[j+1:]
-    return new_files
-
-
-def find(source_id, files):
-    for j, (id, _, _) in enumerate(files):
-        if id == source_id:
-            return j
-
-
-def move(j, i, files):
-    files = insert(j, i, files)
-    files = remove(j+1, files)
-    return files
-
-
-def compact_files(files):
-    j = len(files)-1
-    SPACE_IDX = 2
-    for source_id, source_size, source_free_space in reversed(files):
-        j = find(source_id, files)
-        for i, (_, _, free_space) in enumerate(files):
-            if i == j:
+def compact_files(memory, files):
+    for id, size, _ in tqdm(list(reversed(files))):
+        i = find(id, memory)
+        for j in range(len(memory)):
+            if j == i:
                 break
-            if free_space >= source_size:
-                files[j-1][SPACE_IDX] += source_size + source_free_space
-                files[j][SPACE_IDX] = free_space - source_size
-                files[i][SPACE_IDX] = 0
-                files = move(j, i, files)
-                break
-    return files
+            if memory[j:j+size] == ['.']*size:
+                memory[j:j+size] = memory[i:i+size]
+                memory[i:i+size] = ['.']*size
+    return memory
 
 
 if __name__ == '__main__':
     files = get_files()
-    compacted_files = compact_files(files)
-    memory = get_memory_layout(compacted_files)
+    memory = get_memory_layout(files)
+    compacted_memory = compact_files(memory, files)
 
     sum = 0
-    for i, id in enumerate(memory):
+    for i, id in enumerate(compacted_memory):
         if id == '.':
             continue
         sum += i*id
