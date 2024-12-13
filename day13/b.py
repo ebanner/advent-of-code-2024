@@ -1,7 +1,5 @@
 import sys
 
-import numpy as np
-
 from tqdm import tqdm
 
 
@@ -73,13 +71,13 @@ def get_min_cost(prizeX, prizeY, X, Y, memo, indent):
 
     if numerator % denominator == 0:
         b = numerator // denominator
-        a = (prizeX - X[B]*b) // X[A]
-        # print(a, b)
-        cost = 3*a + b
-        # print(prizeX, prize, '->', cost)
-        return cost
+        if (prizeX - X[B]*b) % X[A] != 0:
+            return -1
+        else:
+            a = (prizeX - X[B]*b) // X[A]
+            cost = 3*a + b
+            return cost
     else:
-        # print(prizeX, prize, '->', -1)
         return -1
 
 
@@ -93,9 +91,7 @@ if __name__ == '__main__':
         prizeX += 10000000000000
         prizeY += 10000000000000
         X, Y = getX(input_chunk), getY(input_chunk)
-        prize = (prizeX, prizeY)
         min_cost = get_min_cost(prizeX, prizeY, X, Y, {}, 0)
-        print(min_cost)
         if min_cost != -1:
             total_min_cost += min_cost
 
