@@ -73,6 +73,7 @@ def try_move(i, j, instruction, map):
 
             assert map[k][j] == 'O'
             k += 1
+
     elif instruction == '<':
         k = j-2
         while True:
@@ -90,6 +91,9 @@ def try_move(i, j, instruction, map):
             assert map[i][k] == 'O'
             k -= 1
 
+    elif instruction == '^':
+        raise NotImplementedError('^', 'try_move')
+
 
 def execute(instruction, map):
     i, j = get_position(map)
@@ -102,20 +106,28 @@ def execute(instruction, map):
         elif map[i][j-1] == 'O':
             map = try_move(i, j, '<', map)
     elif instruction == '^':
-        if map[i-1][j] == '.':
+        if map[i-1][j] == '#':
+            raise NotImplementedError('^', '#')
+        elif map[i-1][j] == '.':
             map[i-1][j] = '@'
             map[i][j] = '.'
-        elif map[i-1][j] == '#':
-            pass
+        elif map[i-1][j] == 'O':
+            raise NotImplementedError('^', 'O')
     elif instruction == '>':
-        if map[i][j+1] == 'O':
+        if map[i][j+1] == '#':
+            raise NotImplementedError('>', '#')
+        elif map[i][j+1] == '.':
+            raise NotImplementedError('>', '.')
+        elif map[i][j+1] == 'O':
             map = try_move(i, j, '>', map)
     elif instruction == 'v':
-        if map[i+1][j] == 'O':
-            map = try_move(i, j, 'v', map)
+        if map[i+1][j] == '#':
+            raise NotImplementedError('v', '#')
         elif map[i+1][j] == '.':
             map[i][j] = '.'
             map[i+1][j] = '@'
+        elif map[i+1][j] == 'O':
+            map = try_move(i, j, 'v', map)
 
     return map
 
@@ -137,7 +149,6 @@ if __name__ == '__main__':
         for row in map:
             print(''.join(row))
         print()
-
 
     gps_coordinates = get_gps_coordinates(map)
     print(sum(gps_coordinates))
