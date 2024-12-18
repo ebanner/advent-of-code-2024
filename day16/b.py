@@ -126,19 +126,7 @@ def find_shortest_paths(start, end, map):
 
     paths[(i, j, direction)] = [(None, None, None, 0)]
 
-    # print('paths', paths)
-    # print()
-    # print(' --- ')
-    # print()
-
     while heap:
-        # for row in map:
-        #     print(''.join(row))
-        # print()
-
-        # print('HEAP', heap)
-        # print()
-
         node = get_smallest(heap)
 
         (cost, i, j, direction) = node
@@ -147,9 +135,6 @@ def find_shortest_paths(start, end, map):
 
         neighbors = get_neighbors(i, j, direction, map)
         for (new_i, new_j, new_direction), edge_cost in get_neighbors(i, j, direction, map):
-            # print('RELAXING', f'(i={new_i}, j={new_j}, direction={new_direction}, cost={cost+edge_cost}')
-            # print()
-
             if (new_i, new_j, new_direction) not in paths:
                 paths[(new_i, new_j, new_direction)] = []
             paths[(new_i, new_j, new_direction)].append((i, j, direction, cost+edge_cost))
@@ -188,13 +173,9 @@ def reverse(shortest_paths):
 
 
 def dfs(node, end, reversed_shortest_paths, visited):
-    # print(f'dfs({node})')
-
     visited.add(node)
 
     (i, j, _) = node
-    # print('i, j', i, j)
-    # print('end', end)
     if (i, j) == end:
         return 1
 
@@ -245,31 +226,12 @@ if __name__ == '__main__':
     start = get_start(map)
     end = get_end(map)
 
-    # for row in map:
-    #     print(''.join(row))
-    # print()
-
     shortest_paths = find_shortest_paths(start, end, map)
-    # print('SHORTEST PATHS')
-    # for key, value in sorted(shortest_paths.items()):
-    #     print(key, value)
-    # print()
-
-    # for row in map:
-    #     print(''.join(row))
-    # print()
 
     reversed_shortest_paths = reverse(shortest_paths)
-    # print('REVERSED SHORTEST PATHS')
-    # for key, value in sorted(reversed_shortest_paths.items()):
-    #     print(key, value)
-    # print()
 
     (i, j, direction) = get_min_goal_state(end, shortest_paths)
     reversed_goal_state = (i, j, reverse_direction(direction))
-
-    # print('STARTING GOAL STATE', reversed_goal_state)
-    # print()
 
     visited = set()
     (i, j, _) = start
@@ -277,13 +239,6 @@ if __name__ == '__main__':
 
     for (i, j, _) in visited:
         map[i][j] = 'O'
-
-    # print(visited)
-    # print()
-
-    # for row in map:
-    #     print(''.join(row))
-    # print()
 
     num_tiles = get_num_tiles(map)
 
