@@ -13,6 +13,7 @@ edward@Edwards-MacBook-Air day23 % python3 b.py < input
 11 -> 975 
 12 -> 91
 13 -> 1
+
 hf,hz,lb,lm,ls,my,ps,qu,ra,uc,vi,xz,yv
 python3 b.py < input  133.41s user 0.06s system 99% cpu 2:13.89 total
 ```
