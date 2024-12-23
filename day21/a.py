@@ -190,8 +190,8 @@ def get_fewest_button_presses(code):
         reversed_path = get_path(visited, start=end, end=state)
         path = list(reversed(reversed_path))
         button_presses = recover_button_presses(path)
-        fewest_button_presses.append(button_presses)
 
+        fewest_button_presses.append(button_presses)
         state = end
 
     return fewest_button_presses
