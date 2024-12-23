@@ -118,7 +118,7 @@ def press(button, state):
 
 
 def bfs(state, end):
-    def get_neighbors(node, visited):
+    def get_neighbors(node):
         neighbors = []
         for button in [
                 '^', 'A',
@@ -157,25 +157,12 @@ def bfs(state, end):
 def get_path(visited, start, end):
     node = start
     path = [node]
-
     while True:
         if node == end:
             break
-
         node = visited[node]
         path.append(node)
-
     return path
-
-
-def get_button_presses(state, end):
-    visited = bfs(state, end)
-
-    reversed_path = get_path(visited, start=end, end=state)
-    path = list(reversed(reversed_path))
-    button_presses = recover_button_presses(path)
-
-    return button_presses
 
 
 def recover_button_presses(path):
@@ -198,8 +185,13 @@ def get_fewest_button_presses(code):
     fewest_button_presses = []
     for c in code:
         end = ('A', 'A', c)
-        button_presses = get_button_presses(state, end)
+
+        visited = bfs(state, end)
+        reversed_path = get_path(visited, start=end, end=state)
+        path = list(reversed(reversed_path))
+        button_presses = recover_button_presses(path)
         fewest_button_presses.append(button_presses)
+
         state = end
 
     return fewest_button_presses
