@@ -1,6 +1,6 @@
 # 🎄 advent-of-code-2024
 
-I'm doing [Advent of Code](https://adventofcode.com) this year with [☕️ Virtual Coffee](https://virtualcoffee.io) in `#dev-code-challenges`.
+I'm doing [Advent of Code](https://adventofcode.com) this year with [Virtual Coffee ☕️](https://virtualcoffee.io) in `#dev-code-challenges`.
 
 <img width="1002" alt="image" src="https://github.com/user-attachments/assets/206a920e-9840-4ec3-bcf8-d3abc2092a20" />
 
