@@ -16,37 +16,67 @@ NUMERIC_PAD = {
 }
 
 
+def get_shortest_numeric_paths(source, dest):
+    def get_neighbors(node):
+        (i, j, _) = node
+
+        neighbors = []
+        if i-1 >= 0:
+            neighbor = (i-1, j, '^')
+            neighbors.append(neighbor)
+
+        if i+1 <= 3 and (i+1, j) != (3, 0):
+            neighbor = (i+1, j, 'v')
+            neighbors.append(neighbor)
+
+        if j-1 >= 0 and (i, j-1) != (3, 0):
+            neighbor = (i, j-1, '<')
+            neighbors.append(neighbor)
+
+        if j+1 <= 2:
+            neighbor = (i, j+1, '>')
+            neighbors.append(neighbor)
+
+        return neighbors
+
+    def get_paths():
+        i, j = source
+        frontier = [((i, j, None),)]
+
+        while True:
+            new_frontier = []
+            for path in frontier:
+                node = path[-1]
+
+                (i, j, _) = node
+                if (i, j) == dest:
+                    paths = [path for path in frontier if (path[-1][0], path[-1][1]) == dest]
+                    return paths
+
+                for neighbor in get_neighbors(node):
+                    new_path = path + (neighbor,)
+                    new_frontier.append(new_path)
+
+            frontier = new_frontier
+
+    paths = get_paths()
+
+    def get_directions(path):
+        directions = tuple(direction for (_, _, direction) in path[1:])
+        directions += ('A',)
+        return directions
+
+    paths = [get_directions(path) for path in paths]
+
+    return paths
+
+
 def get_numeric_shortest_paths():
-    def get_how_numeric(source, dest):
-        (i_start, j_start) = NUMERIC_PAD[source]
-        (i_end, j_end) = NUMERIC_PAD[dest]
-
-        di = i_end-i_start
-        dj = j_end-j_start
-
-        if dj < 0:
-            j_how = ['<' for _ in range(-dj)]
-        else:
-            j_how = ['>' for _ in range(dj)]
-
-        if di < 0:
-            i_how = ['^' for _ in range(-di)]
-        else:
-            i_how = ['v' for _ in range(di)]
-
-
-        if di < 0:
-            how = i_how + j_how
-        else:
-            how = j_how + i_how
-
-        how += ['A']
-
-        return how
-
     numeric_pad_shortest_paths = {}
-    for pair in list(itertools.product(NUMERIC_PAD.keys(), NUMERIC_PAD.keys())):
-        numeric_pad_shortest_paths[pair] = get_how_numeric(*pair)
+    for source, dest in list(itertools.product(NUMERIC_PAD.keys(), NUMERIC_PAD.keys())):
+        numeric_pad_shortest_paths[(source, dest)] = get_shortest_numeric_paths(
+            NUMERIC_PAD[source], NUMERIC_PAD[dest]
+        )
     return numeric_pad_shortest_paths
 
 
@@ -58,36 +88,67 @@ DIRECTIONAL_PAD = {
     '<': (1, 0), 'v': (1, 1), '>': (1, 2),
 }
 
+def get_shortest_directional_paths(source, dest):
+    def get_neighbors(node):
+        (i, j, _) = node
+
+        neighbors = []
+        if i-1 >= 0 and (i-1, j) != (0, 0):
+            neighbor = (i-1, j, '^')
+            neighbors.append(neighbor)
+
+        if i+1 <= 1:
+            neighbor = (i+1, j, 'v')
+            neighbors.append(neighbor)
+
+        if j-1 >= 0 and (i, j-1) != (0, 0):
+            neighbor = (i, j-1, '<')
+            neighbors.append(neighbor)
+
+        if j+1 <= 2:
+            neighbor = (i, j+1, '>')
+            neighbors.append(neighbor)
+
+        return neighbors
+
+    def get_paths():
+        i, j = source
+        frontier = [((i, j, None),)]
+
+        while True:
+            new_frontier = []
+            for path in frontier:
+                node = path[-1]
+
+                (i, j, _) = node
+                if (i, j) == dest:
+                    paths = [path for path in frontier if (path[-1][0], path[-1][1]) == dest]
+                    return paths
+
+                for neighbor in get_neighbors(node):
+                    new_path = path + (neighbor,)
+                    new_frontier.append(new_path)
+
+            frontier = new_frontier
+
+    paths = get_paths()
+
+    def get_directions(path):
+        directions = tuple(direction for (_, _, direction) in path[1:])
+        directions += ('A',)
+        return directions
+
+    paths = [get_directions(path) for path in paths]
+
+    return paths
+
+
 def get_directional_shortest_paths():
-    def get_how_directional(source, dest):
-        (i_start, j_start) = DIRECTIONAL_PAD[source]
-        (i_end, j_end) = DIRECTIONAL_PAD[dest]
-
-        di = i_end-i_start
-        dj = j_end-j_start
-
-        if dj < 0:
-            j_how = ['<' for _ in range(-dj)]
-        else:
-            j_how = ['>' for _ in range(dj)]
-
-        if di < 0:
-            i_how = ['^' for _ in range(-di)]
-        else:
-            i_how = ['v' for _ in range(di)]
-
-        if di < 0:
-            how = j_how + i_how
-        else:
-            how = i_how + j_how
-
-        how += 'A'
-
-        return how
-
     directional_pad_shortest_paths = {}
-    for pair in list(itertools.product(DIRECTIONAL_PAD.keys(), DIRECTIONAL_PAD.keys())):
-        directional_pad_shortest_paths[pair] = get_how_directional(*pair)
+    for source, dest in list(itertools.product(DIRECTIONAL_PAD.keys(), DIRECTIONAL_PAD.keys())):
+        directional_pad_shortest_paths[(source, dest)] = get_shortest_directional_paths(
+            DIRECTIONAL_PAD[source], DIRECTIONAL_PAD[dest]
+        )
     return directional_pad_shortest_paths
 
 
@@ -99,18 +160,30 @@ def get_transitions(buttons):
     return transitions
 
 
+MEMO = {}
 def get_length(button_sequence, depth):
     if depth == 0:
         return len(button_sequence)
+
+    if (button_sequence, depth) in MEMO:
+        return MEMO[(button_sequence, depth)]
 
     transitions = get_transitions(button_sequence)
 
     total_length = 0
     for start, end in transitions:
-        directional_shortest_path = DIRECTIONAL_SHORTEST_PATHS[(start, end)]
+        directional_shortest_paths = DIRECTIONAL_SHORTEST_PATHS[(start, end)]
 
-        length = get_length(directional_shortest_path, depth-1)
-        total_length += length
+        min_length = float('inf')
+        lengths = []
+        for directional_shortest_path in directional_shortest_paths:
+            length = get_length(directional_shortest_path, depth-1)
+            lengths.append((start, end, directional_shortest_path, depth, length))
+            min_length = min(length, min_length)
+
+        total_length += min_length
+
+    MEMO[(button_sequence, depth)] = total_length
 
     return total_length
 
@@ -134,12 +207,14 @@ if __name__ == '__main__':
 
         total_length = 0
         for start, end in transitions:
-            numeric_shortest_path = NUMERIC_SHORTEST_PATHS[(start, end)]
+            numeric_shortest_paths = NUMERIC_SHORTEST_PATHS[(start, end)]
 
-            length = get_length(numeric_shortest_path, depth=2)
-            total_length += length
+            min_length = float('inf')
+            for numeric_shortest_path in numeric_shortest_paths:
+                length = get_length(numeric_shortest_path, depth=25)
+                min_length = min(length, min_length)
 
-        print(code, total_length)
+            total_length += min_length
 
         complexity = get_complexity(total_length, code)
         complexities.append(complexity)
