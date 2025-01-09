@@ -4,7 +4,6 @@ from graphviz import Digraph
 
 
 graph = Digraph("logic_graph")
-graph.attr()  # Set layout direction left-to-right
 
 
 def get_rules():
@@ -20,21 +19,20 @@ def get_rules():
 
 def add_nodes(rules):
     nodes = {}
-    node_outputs = {}
     for rule in rules:
         x, y, op, z = rule
         node_name = f'{op}_{x}_{y}'
         graph.node(node_name, label=op)
         nodes[z] = node_name
-        node_outputs[(x, y)] = node_name
-    return nodes, node_outputs
+    return nodes
 
 
-def add_edges(nodes, node_outputs, rules):
+def add_edges(nodes, rules):
     for rule in rules:
         x, y, op, z = rule
-        graph.edge(nodes.get(x, x), node_outputs[(x, y)], label=x)
-        graph.edge(nodes.get(y, y), node_outputs[(x, y)], label=y)
+        node_name = f'{op}_{x}_{y}'
+        graph.edge(nodes.get(x, x), node_name, label=x)
+        graph.edge(nodes.get(y, y), node_name, label=y)
 
 
 def get_terminal_edges(rules):
@@ -51,7 +49,6 @@ def get_terminal_edges(rules):
         for rule in rules:
             x, y, _, _ = rule
             if edge == x or edge == y:
-                print(edge, 'is not terminal')
                 return False
         return True
 
@@ -72,11 +69,9 @@ def add_terminal_edges(terminal_edges, nodes):
 
 if __name__ == '__main__':
     rules = get_rules()
-    for rule in rules:
-        print(rule)
 
-    nodes, node_outputs = add_nodes(rules)
-    add_edges(nodes, node_outputs, rules)
+    nodes = add_nodes(rules)
+    add_edges(nodes, rules)
 
     terminal_edges = get_terminal_edges(rules)
     add_terminal_edges(terminal_edges, nodes)
