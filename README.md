@@ -2,7 +2,7 @@
 
 I'm doing [Advent of Code](https://adventofcode.com) this year with [Virtual Coffee ☕️](https://virtualcoffee.io) in `#dev-code-challenges`.
 
-<img width="1012" alt="image" src="https://github.com/user-attachments/assets/e791e162-e921-4e13-8a8f-1b97abcf6c02" />
+https://github.com/user-attachments/assets/f0e4b272-1a00-415a-bcfe-8ea760786053
 
 ## Related
 
